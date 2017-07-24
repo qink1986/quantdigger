@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##
 # @file test_window_gate.py
-# @brief 
+# @brief
 # @author wondereamer
 # @version 0.1
 # @date 2016-08-07
@@ -11,13 +11,12 @@ import json
 import time, sys
 import unittest
 
-from quantdigger.config import ConfigInteraction
-from quantdigger.event.rpc import EventRPCClient
 from quantdigger.event.eventengine import ZMQEventEngine
-from quantdigger.interaction.backend import backend
+from quantdigger.interaction.backend import Backend
 from quantdigger.widgets.mplotwidgets.mainwindow import  mainwindow
 
 
+backend = Backend()
 class TestWindowGateCallBackend(object):
     """ WindowGate call backend """
 

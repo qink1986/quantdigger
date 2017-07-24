@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##
 # @file test_interactive.py
-# @brief 
+# @brief
 # @author wondereamer
 # @version 0.1
 # @date 2016-08-07
@@ -12,7 +12,9 @@ import time, sys
 import unittest
 
 from quantdigger.event.rpc import EventRPCClient
-from quantdigger.interaction.backend import backend
+from quantdigger.interaction.backend import Backend
+
+backend = Backend()
 
 class TestBackend(unittest.TestCase):
 

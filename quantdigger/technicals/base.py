@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-# @file base.py
-# @brief 指标基类
-# @author wondereamer
-# @version 0.1
-# @date 2015-12-23
 
 import six
 from collections import OrderedDict
@@ -58,7 +53,7 @@ def tech_init(method):
 
 # 带参数decorator
 #def invoke_algo(algo, *arg):
-    #"""docstring for test""" 
+    #"""docstring for test"""
     #def _algo(method):
         #def __algo(self):
             #if not self.series.updated:
@@ -104,9 +99,7 @@ class TechnicalBase(Plotter):
         if not hasattr(self, '_args'):
             raise Exception("每个指标都必须有_args属性，代表指标计算的参数！")
         self.data = self._args[0]
-        # 数据转化成ta-lib能处理的格式
-        #self._args[0] = ndarray(self._args[0])
-        self._vector_algo(self._args[0],self._args[1])
+        self._vector_algo(*tuple(self._args))
         if not hasattr(self, 'values'):
             raise Exception("每个指标都必须有value属性，代表指标计算结果！")
         if isinstance(self.values, dict):
@@ -144,7 +137,7 @@ class TechnicalBase(Plotter):
 
         #for i, v in enumerate(values):
             #if self.is_multiple:
-                #self.series.values()[i].update(v) 
+                #self.series.values()[i].update(v)
             #else:
                 #self.series[i].update(v)
         pass

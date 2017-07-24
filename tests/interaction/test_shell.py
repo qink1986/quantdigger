@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##
 # @file test_shell.py
-# @brief 
+# @brief
 # @author wondereamer
 # @version 0.1
 # @date 2016-08-07
@@ -10,13 +10,11 @@ import six
 import sys
 import unittest
 
-from quantdigger.config import ConfigInteraction
-from quantdigger.event.rpc import EventRPCClient
-from quantdigger.interaction.backend import backend
+from quantdigger.interaction.backend import Backend
 from quantdigger.interaction.shell import shell
-from quantdigger.event.eventengine import ZMQEventEngine
 
 
+backend = Backend()
 class TestShell(object):
     """ WindowGate call backend """
     def __init__(self):
