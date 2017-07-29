@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 # from flufl.enum import Enum
 import json
+import six
+
+from quantdigger.util import py
 
 
 # @TODO REMOVE EventsPool
@@ -59,6 +62,8 @@ class Event(object):
 
     @classmethod
     def message_to_event(self, message):
+        if py == 3:
+            message = message.decode('utf8')
         route, args = message.split('&')
         route = route[1:]
         return Event(route=route, args=json.loads(args))
@@ -70,7 +75,7 @@ class Event(object):
 
     @classmethod
     def message_header(self, route):
-        return b'<%s&' % route
+        return b'<%s&' % six.b(route)
 
 
 class SignalEvent(Event):

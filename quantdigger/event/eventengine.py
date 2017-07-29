@@ -6,12 +6,13 @@
 # @version 0.5
 # @date 2016-05-17
 
+import six
+from six.moves import queue, _thread
+
 import abc
-import thread
 import time
 import zmq
 
-from Queue import Queue, Empty
 from time import sleep
 from threading import Thread, Condition, Lock
 
@@ -68,7 +69,7 @@ class EventEngine:
 
     def start(self):
         """引擎启动"""
-        #print self._routes
+        #six.print_(self._routes)
         self._active = True
 
     def stop(self):
@@ -126,7 +127,7 @@ class EventEngine:
         for handler in self._routes[event.route]:
             try:
                 log.debug("处理事件%s" % event.route)
-                thread.start_new_thread(handler, (event,))
+                _thread.start_new_thread(handler, (event,))
                 #handler(event)
             except Exception as e:
                 log.error(e)
@@ -140,26 +141,26 @@ class QueueEventEngine(EventEngine):
     def __init__(self, name):
         # 事件队列
         EventEngine.__init__(self)
-        self._queue = Queue()
-        self._thread = Thread(target=self._run)
-        self._thread.daemon = True
+        self._queue = queue.Queue()
+        self._thrd = Thread(target=self._run)
+        self._thrd.daemon = True
         self._name = name
 
     def emit(self, event):
         #"""向事件队列中存入事件"""
-        #print self._queue.qsize()
+        #six.print_(self._queue.qsize())
         self._queue.put(event)
 
     def start(self):
         """引擎启动"""
         EventEngine.start(self)
-        self._thread.start()
+        self._thrd.start()
 
     def stop(self):
         """停止引擎"""
         EventEngine.stop(self)
         # 等待事件处理线程退出
-        #self._thread.join()
+        #self._thrd.join()
 
     def _run(self):
         """引擎运行"""
@@ -169,7 +170,7 @@ class QueueEventEngine(EventEngine):
                 # self._active才会发挥作用。
                 event = self._queue.get(block=True, timeout=1)
                 self._process(event)
-            except Empty:
+            except queue.Empty:
                 pass
 
 
@@ -198,29 +199,29 @@ class ZMQEventEngine(EventEngine):
         self._client_recv_event_socket = self._context.socket(zmq.SUB)
         self._client_recv_event_socket.connect(event_protocol)
 
-        self._thread = Thread(target=self._run)
-        self._thread.daemon = True
+        self._thrd = Thread(target=self._run)
+        self._thrd.daemon = True
         self._queue_engine = QueueEventEngine(self._name)
         time.sleep(1)
 
     def emit(self, event):
         """ client or event"""
         msg = Event.event_to_message(event)
-        self._emit_event_socket.send(msg)
+        self._emit_event_socket.send_string(msg)
         return
 
     def start(self):
         """引擎启动"""
         EventEngine.start(self)
         self._queue_engine.start()
-        self._thread.start()
+        self._thrd.start()
 
     def stop(self):
         """停止引擎"""
         EventEngine.stop(self)
         self._queue_engine.stop()
         self._context.destroy()
-        #self._thread.join()
+        #self._thrd.join()
 
     def register(self, route, handler):
         """ 接受指定的事件。 """
@@ -267,7 +268,7 @@ if __name__ == '__main__':
     import time, datetime, sys
 
     def simpletest(event):
-        print str(datetime.datetime.now()), event
+        six.print_(str(datetime.datetime.now()), event)
 
     ee = ZMQEventEngine('test')
     ee.register(Event.TIMER, simpletest)
