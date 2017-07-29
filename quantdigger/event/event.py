@@ -3,6 +3,8 @@
 import json
 import six
 
+from quantdigger.util import py
+
 
 # @TODO REMOVE EventsPool
 class EventsPool(object):
@@ -60,6 +62,8 @@ class Event(object):
 
     @classmethod
     def message_to_event(self, message):
+        if py == 3:
+            message = message.decode('utf8')
         route, args = message.split('&')
         route = route[1:]
         return Event(route=route, args=json.loads(args))
